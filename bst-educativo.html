@@ -1,0 +1,3632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Árbol Binario de Búsqueda (BST) - Aprendizaje Interactivo</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- D3.js v7 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #ec4899;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    --dark: #1e293b;
+    --light: #f8fafc;
+    --gray: #64748b;
+    --gray-light: #e2e8f0;
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    --node-fill: #6366f1;
+    --node-stroke: #4f46e5;
+    --node-text: #ffffff;
+    --node-highlight: #f59e0b;
+    --node-visited: #10b981;
+    --node-comparing: #ef4444;
+    --node-new: #ec4899;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    color: var(--dark);
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+/* Header */
+.header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 25px 35px;
+    margin-bottom: 25px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-title i {
+    font-size: 2.5rem;
+    background: var(--bg-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: var(--bg-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header-subtitle {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-top: 3px;
+}
+
+.header-author {
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+.header-author strong {
+    color: var(--primary);
+}
+
+/* Layout principal */
+.main-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr 320px;
+    gap: 20px;
+}
+
+@media (max-width: 1200px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Cards */
+.card {
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gray-light);
+}
+
+.card-title i {
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+/* Inputs y Botones */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.input-label {
+    font-size: 0.85rem;
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.input-field {
+    width: 100%;
+    padding: 11px 15px;
+    border: 2px solid var(--gray-light);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.btn {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+.btn-success { background: linear-gradient(135deg, #10b981, #059669); }
+.btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.btn-info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.btn-secondary { background: linear-gradient(135deg, #64748b, #475569); }
+.btn-purple { background: linear-gradient(135deg, #a855f7, #9333ea); }
+
+.btn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.btn-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+}
+
+/* SVG Container */
+.tree-container {
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    box-shadow: var(--card-shadow);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    min-height: 500px;
+}
+
+.tree-container-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tree-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.stat-badge {
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.stat-badge i {
+    color: var(--primary);
+}
+
+.stat-badge .stat-value {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+#tree-svg {
+    width: 100%;
+    height: 550px;
+    background: linear-gradient(135deg, #fafbff 0%, #f0f4ff 100%);
+    border-radius: 12px;
+    cursor: grab;
+}
+
+#tree-svg:active {
+    cursor: grabbing;
+}
+
+.empty-tree-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--gray);
+    pointer-events: none;
+}
+
+.empty-tree-message i {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    opacity: 0.3;
+}
+
+.empty-tree-message p {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Nodos SVG */
+.node circle {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.3));
+}
+
+.node text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    fill: var(--node-text);
+    pointer-events: none;
+    text-anchor: middle;
+    dominant-baseline: central;
+    font-size: 16px;
+}
+
+.link {
+    fill: none;
+    stroke: #94a3b8;
+    stroke-width: 2.5;
+    transition: stroke 0.3s ease;
+}
+
+.node.highlighted circle {
+    fill: var(--node-highlight) !important;
+    stroke: #d97706 !important;
+    filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.8));
+}
+
+.node.visited circle {
+    fill: var(--node-visited) !important;
+    stroke: #059669 !important;
+}
+
+.node.comparing circle {
+    fill: var(--node-comparing) !important;
+    stroke: #dc2626 !important;
+    filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.9));
+}
+
+.node.new-node circle {
+    fill: var(--node-new) !important;
+    stroke: #db2777 !important;
+}
+
+.node.found circle {
+    fill: var(--success) !important;
+    stroke: #059669 !important;
+    filter: drop-shadow(0 0 25px rgba(16, 185, 129, 1));
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+.node.pulsing circle {
+    animation: pulse 0.6s ease-in-out infinite;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+
+/* Panel de recorrido */
+.traversal-display {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: white;
+    padding: 18px;
+    border-radius: 12px;
+    margin-top: 15px;
+    min-height: 80px;
+    font-family: 'Fira Code', monospace;
+    position: relative;
+}
+
+.traversal-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.traversal-values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.traversal-value {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.traversal-arrow {
+    color: #64748b;
+    font-weight: bold;
+}
+
+/* Mensaje flotante */
+.toast {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateX(100px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 400px;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast.success { background: linear-gradient(135deg, #10b981, #059669); }
+.toast.warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.toast.danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.toast.info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+
+/* Explicación dinámica */
+.explanation-box {
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    border-left: 4px solid var(--primary);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 12px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--dark);
+}
+
+.explanation-box strong {
+    color: var(--primary-dark);
+}
+
+.explanation-title {
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Leyenda */
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+    font-size: 0.8rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--gray);
+}
+
+.legend-color {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+    background: var(--gray-light);
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.tab {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+.tab.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Pseudocódigo */
+.pseudocode {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 15px;
+    border-radius: 10px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    max-height: 500px;
+    overflow-y: auto;
+    white-space: pre;
+}
+
+.pseudocode .keyword { color: #f472b6; font-weight: 500; }
+.pseudocode .function { color: #60a5fa; }
+.pseudocode .type { color: #34d399; }
+.pseudocode .comment { color: #64748b; font-style: italic; }
+.pseudocode .string { color: #fbbf24; }
+.pseudocode .number { color: #fb923c; }
+.pseudocode .annotation { color: #c084fc; }
+.pseudocode .highlight-line {
+    background: rgba(99, 102, 241, 0.25);
+    display: block;
+    margin: 0 -15px;
+    padding: 0 15px;
+    border-left: 3px solid var(--primary);
+}
+
+/* Selector de versión recursiva / iterativa */
+.version-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    background: var(--gray-light);
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.version-btn {
+    padding: 8px;
+    border: none;
+    background: transparent;
+    border-radius: 7px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--gray);
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.version-btn.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.version-btn.disabled-version {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.code-info-badge {
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    border-left: 3px solid var(--primary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    color: var(--dark);
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.code-info-badge strong {
+    color: var(--primary-dark);
+}
+
+.copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(99, 102, 241, 0.85);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.copy-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.code-wrapper {
+    position: relative;
+}
+
+/* ========== MODAL FULLSCREEN ========== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    animation: fadeIn 0.25s ease-out;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    height: 100%;
+    max-width: 1700px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: white;
+    padding: 18px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.modal-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.modal-title i {
+    font-size: 1.4rem;
+}
+
+.modal-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.modal-selector {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+}
+
+.modal-selector option {
+    background: #4f46e5;
+    color: white;
+}
+
+.modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: #cbd5e1;
+    overflow: hidden;
+}
+
+.code-column {
+    background: white;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.code-column-header {
+    padding: 12px 18px;
+    background: #f8fafc;
+    border-bottom: 2px solid var(--gray-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.code-column-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.95rem;
+}
+
+.code-column-title.recursive {
+    color: #059669;
+}
+
+.code-column-title.iterative {
+    color: #d97706;
+}
+
+.code-column-title i {
+    font-size: 1.1rem;
+}
+
+.code-column-badge {
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-recursive {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.badge-iterative {
+    background: #fed7aa;
+    color: #d97706;
+}
+
+.modal-copy-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.modal-copy-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.code-column-body {
+    flex: 1;
+    overflow: auto;
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 18px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    white-space: pre;
+}
+
+.code-column-body .keyword { color: #f472b6; font-weight: 500; }
+.code-column-body .function { color: #60a5fa; }
+.code-column-body .type { color: #34d399; }
+.code-column-body .comment { color: #64748b; font-style: italic; }
+.code-column-body .string { color: #fbbf24; }
+.code-column-body .number { color: #fb923c; }
+.code-column-body .annotation { color: #c084fc; }
+
+.modal-footer {
+    background: #f8fafc;
+    padding: 12px 25px;
+    border-top: 1px solid var(--gray-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+.sync-scroll-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.sync-scroll-control input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+/* En móvil: columnas apiladas */
+@media (max-width: 900px) {
+    .modal-body {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+    .modal-content {
+        border-radius: 12px;
+    }
+    .modal-header {
+        padding: 12px 15px;
+    }
+    .modal-title {
+        font-size: 1rem;
+    }
+    .code-column-body {
+        font-size: 0.75rem;
+        padding: 12px;
+    }
+}
+
+/* Botón abrir comparación */
+.btn-compare {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn-compare:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45);
+}
+
+.btn-compare:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Velocidad slider */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.speed-control input[type="range"] {
+    flex: 1;
+    accent-color: var(--primary);
+}
+
+.speed-label {
+    font-size: 0.8rem;
+    color: var(--gray);
+    min-width: 70px;
+    text-align: right;
+    font-weight: 600;
+}
+
+/* Quiz */
+.quiz-question {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border-left: 4px solid var(--warning);
+}
+
+.quiz-question-text {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.quiz-option {
+    background: white;
+    border: 2px solid var(--gray-light);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+}
+
+.quiz-option:hover {
+    border-color: var(--primary);
+    background: #eef2ff;
+}
+
+.quiz-option.correct {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-color: #059669;
+}
+
+.quiz-option.incorrect {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border-color: #dc2626;
+}
+
+/* Step indicator */
+.step-indicator {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.step-indicator i {
+    font-size: 1.3rem;
+}
+
+.step-counter {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-left: auto;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .header { padding: 15px 20px; }
+    .header h1 { font-size: 1.3rem; }
+    .header-title i { font-size: 2rem; }
+    .header-author { text-align: left; width: 100%; }
+    #tree-svg { height: 400px; }
+    .card { padding: 16px; }
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    color: white;
+    padding: 20px;
+    margin-top: 20px;
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.footer strong {
+    color: #fbbf24;
+}
+
+/* Animación entrada de cards */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card, .tree-container {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Botón guía rápida */
+.quick-guide {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border-left: 4px solid var(--success);
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.quick-guide strong {
+    color: #059669;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-title">
+            <i class="fas fa-tree"></i>
+            <div>
+                <h1>Árbol Binario de Búsqueda (BST)</h1>
+                <div class="header-subtitle"><i class="fas fa-graduation-cap"></i> Laboratorio Interactivo de Estructuras de Datos</div>
+            </div>
+        </div>
+        <div class="header-author">
+            <div><strong>Algoritmos II</strong> · Ingeniería de Sistemas</div>
+            <div>Corporación Universitaria Remington - Sede Yopal</div>
+            <div>Docente: Mg. Julio Andrés Silva Aragón</div>
+        </div>
+    </div>
+
+    <!-- Layout principal -->
+    <div class="main-grid">
+
+        <!-- Columna Izquierda: Controles -->
+        <div class="left-panel">
+            
+            <!-- Inserción -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-plus-circle"></i> Construcción del Árbol
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">Múltiples valores (separados por comas o espacios):</label>
+                    <input type="text" id="batch-input" class="input-field" placeholder="Ej: 50, 30, 70, 20, 40, 60, 80" value="50,30,70,20,40,60,80,10,25,35,45">
+                </div>
+                
+                <button class="btn btn-primary" onclick="loadBatch()">
+                    <i class="fas fa-upload"></i> Cargar Árbol
+                </button>
+
+                <div style="height: 12px;"></div>
+
+                <div class="input-group">
+                    <label class="input-label">Insertar valor individual:</label>
+                    <input type="number" id="single-input" class="input-field" placeholder="Escribe un número...">
+                </div>
+
+                <button class="btn btn-success" onclick="insertSingle()">
+                    <i class="fas fa-plus"></i> Insertar Valor
+                </button>
+
+                <div style="height: 12px;"></div>
+
+                <div class="btn-row">
+                    <button class="btn btn-info" onclick="generateRandom()">
+                        <i class="fas fa-dice"></i> Aleatorio
+                    </button>
+                    <button class="btn btn-danger" onclick="clearTree()">
+                        <i class="fas fa-trash"></i> Limpiar
+                    </button>
+                </div>
+
+                <div class="quick-guide">
+                    <strong><i class="fas fa-lightbulb"></i> Consejo:</strong> Presiona <strong>Enter</strong> en cualquier campo para ejecutar la acción.
+                </div>
+            </div>
+
+            <!-- Búsqueda y Eliminación -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-search"></i> Buscar y Eliminar
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Valor a buscar/eliminar:</label>
+                    <input type="number" id="search-input" class="input-field" placeholder="Escribe un número...">
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn btn-info" onclick="searchValue()">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                    <button class="btn btn-warning" onclick="deleteValue()">
+                        <i class="fas fa-minus-circle"></i> Eliminar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Control de velocidad -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-tachometer-alt"></i> Velocidad de Animación
+                </div>
+                <div class="speed-control">
+                    <i class="fas fa-running"></i>
+                    <input type="range" id="speed-slider" min="100" max="1500" value="600" step="100">
+                    <span class="speed-label" id="speed-label">600ms</span>
+                </div>
+                <div class="quick-guide">
+                    Ajusta qué tan rápido o lento se muestra cada paso de las animaciones.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Columna Central: Visualización del Árbol -->
+        <div class="tree-container">
+            <div class="tree-container-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-sitemap" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <h2 style="font-size: 1.1rem; color: var(--dark);">Visualización del Árbol</h2>
+                </div>
+                <div class="tree-stats">
+                    <div class="stat-badge">
+                        <i class="fas fa-circle-nodes"></i> Nodos: <span class="stat-value" id="node-count">0</span>
+                    </div>
+                    <div class="stat-badge">
+                        <i class="fas fa-arrows-up-down"></i> Altura: <span class="stat-value" id="tree-height">0</span>
+                    </div>
+                    <div class="stat-badge">
+                        <i class="fas fa-arrow-down"></i> Mín: <span class="stat-value" id="min-value">-</span>
+                    </div>
+                    <div class="stat-badge">
+                        <i class="fas fa-arrow-up"></i> Máx: <span class="stat-value" id="max-value">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="position: relative;">
+                <svg id="tree-svg"></svg>
+                <div class="empty-tree-message" id="empty-message">
+                    <i class="fas fa-seedling"></i>
+                    <p>El árbol está vacío</p>
+                    <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 8px;">Ingresa valores para comenzar a construirlo</p>
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--node-fill);"></div>
+                    <span>Nodo Normal</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--node-comparing);"></div>
+                    <span>Comparando</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--node-highlight);"></div>
+                    <span>Actual</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--node-visited);"></div>
+                    <span>Visitado</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--node-new);"></div>
+                    <span>Nuevo</span>
+                </div>
+            </div>
+
+            <!-- Panel de recorrido -->
+            <div class="traversal-display">
+                <div class="traversal-label">
+                    <i class="fas fa-route"></i> Secuencia del recorrido:
+                </div>
+                <div class="traversal-values" id="traversal-output">
+                    <span style="color: #64748b; font-style: italic;">Ejecuta un recorrido para ver la secuencia...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Recorridos y Aprendizaje -->
+        <div class="right-panel">
+
+            <!-- Recorridos -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-route"></i> Recorridos del Árbol
+                </div>
+
+                <div class="btn-row-3">
+                    <button class="btn btn-purple" onclick="traverse('preorder')" title="Raíz → Izq → Der">
+                        <i class="fas fa-play"></i> Pre
+                    </button>
+                    <button class="btn btn-purple" onclick="traverse('inorder')" title="Izq → Raíz → Der">
+                        <i class="fas fa-play"></i> In
+                    </button>
+                    <button class="btn btn-purple" onclick="traverse('postorder')" title="Izq → Der → Raíz">
+                        <i class="fas fa-play"></i> Post
+                    </button>
+                </div>
+
+                <div style="height: 10px;"></div>
+
+                <div class="btn-row">
+                    <button class="btn btn-info" onclick="traverse('bfs')">
+                        <i class="fas fa-layer-group"></i> BFS
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetHighlight()">
+                        <i class="fas fa-redo"></i> Reiniciar
+                    </button>
+                </div>
+
+                <div id="traversal-explanation" class="explanation-box" style="display: none;">
+                    <div class="explanation-title">
+                        <i class="fas fa-info-circle"></i> <span id="explain-title"></span>
+                    </div>
+                    <div id="explain-content"></div>
+                </div>
+            </div>
+
+            <!-- Tabs de aprendizaje -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-book"></i> Centro de Aprendizaje
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('theory')">Teoría</button>
+                    <button class="tab" onclick="switchTab('code')">Código</button>
+                    <button class="tab" onclick="switchTab('quiz')">Quiz</button>
+                </div>
+
+                <!-- Tab Teoría -->
+                <div id="tab-theory" class="tab-content active">
+                    <div class="explanation-box">
+                        <div class="explanation-title">
+                            <i class="fas fa-tree"></i> ¿Qué es un BST?
+                        </div>
+                        Un <strong>Árbol Binario de Búsqueda</strong> es una estructura de datos donde cada nodo tiene como máximo 2 hijos y cumple:
+                        <ul style="margin-top: 8px; margin-left: 20px;">
+                            <li>Hijos <strong>izquierdos</strong> < padre</li>
+                            <li>Hijos <strong>derechos</strong> > padre</li>
+                            <li>Sin valores duplicados</li>
+                        </ul>
+                    </div>
+
+                    <div class="explanation-box" style="margin-top: 10px;">
+                        <div class="explanation-title">
+                            <i class="fas fa-bolt"></i> Complejidad
+                        </div>
+                        <strong>Promedio:</strong> O(log n)<br>
+                        <strong>Peor caso:</strong> O(n) cuando degenera en lista
+                    </div>
+
+                    <div class="explanation-box" style="margin-top: 10px;">
+                        <div class="explanation-title">
+                            <i class="fas fa-industry"></i> Casos de uso
+                        </div>
+                        Bases de datos indexadas, motores de búsqueda, sistemas de archivos, autocompletado, y más.
+                    </div>
+                </div>
+
+                <!-- Tab Código -->
+                <div id="tab-code" class="tab-content">
+                    <div class="code-info-badge">
+                        <strong><i class="fab fa-java"></i> Código Java completo</strong> — Lenguaje usado en Algoritmos II. Compara la versión recursiva (más elegante) con la iterativa (sin recursividad, usa pilas/colas explícitas).
+                    </div>
+
+                    <select id="code-selector" class="input-field" onchange="showPseudocode()" style="margin-bottom: 10px;">
+                        <optgroup label="📁 Estructura completa">
+                            <option value="nodo">Clase Nodo.java</option>
+                            <option value="arbol">Clase ArbolBinarioBST.java</option>
+                            <option value="main">Clase Main.java (con Scanner)</option>
+                        </optgroup>
+                        <optgroup label="🔧 Operaciones individuales">
+                            <option value="insert">Inserción</option>
+                            <option value="search">Búsqueda</option>
+                            <option value="delete">Eliminación</option>
+                        </optgroup>
+                        <optgroup label="🚶 Recorridos">
+                            <option value="preorder">Recorrido Preorden</option>
+                            <option value="inorder">Recorrido Inorden</option>
+                            <option value="postorder">Recorrido Postorden</option>
+                            <option value="bfs">Recorrido BFS (por niveles)</option>
+                        </optgroup>
+                    </select>
+
+                    <div class="version-toggle" id="version-toggle">
+                        <button class="version-btn active" id="btn-recursive" onclick="setVersion('recursive')">
+                            <i class="fas fa-sync-alt"></i> Con recursividad
+                        </button>
+                        <button class="version-btn" id="btn-iterative" onclick="setVersion('iterative')">
+                            <i class="fas fa-list-ol"></i> Sin recursividad
+                        </button>
+                    </div>
+
+                    <button class="btn-compare" id="btn-compare" onclick="openCompareModal()">
+                        <i class="fas fa-columns"></i> Comparar lado a lado (pantalla completa)
+                    </button>
+
+                    <div class="code-wrapper">
+                        <button class="copy-btn" onclick="copyCode()" title="Copiar código">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                        <div class="pseudocode" id="pseudocode-display"></div>
+                    </div>
+                </div>
+
+                <!-- Tab Quiz -->
+                <div id="tab-quiz" class="tab-content">
+                    <div id="quiz-container"></div>
+                    <button class="btn btn-primary" onclick="generateQuiz()" style="margin-top: 10px;">
+                        <i class="fas fa-question-circle"></i> Nueva Pregunta
+                    </button>
+                </div>
+            </div>
+
+            <!-- Paso a paso -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-shoe-prints"></i> Modo Paso a Paso
+                </div>
+                <div id="step-info" style="font-size: 0.85rem; color: var(--gray); margin-bottom: 10px;">
+                    Activa este modo para ver cada comparación durante la inserción y búsqueda.
+                </div>
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; background: var(--gray-light); border-radius: 10px;">
+                    <input type="checkbox" id="step-mode" style="width: 18px; height: 18px; accent-color: var(--primary);">
+                    <span style="font-weight: 600; color: var(--dark);">Activar modo educativo</span>
+                </label>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div><i class="fas fa-code"></i> Recurso educativo desarrollado para <strong>Algoritmos II</strong></div>
+        <div style="margin-top: 5px; opacity: 0.8;">Corporación Universitaria Remington · Sede Yopal · Casanare, Colombia</div>
+    </div>
+</div>
+
+<!-- Modal de comparación lado a lado -->
+<div class="modal-overlay" id="compare-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">
+                <i class="fas fa-code-compare"></i>
+                <span>Comparación: Recursivo vs Iterativo</span>
+            </div>
+            <div class="modal-controls">
+                <select class="modal-selector" id="modal-selector" onchange="updateCompareModal()">
+                    <optgroup label="Operaciones">
+                        <option value="insert">Inserción</option>
+                        <option value="search">Búsqueda</option>
+                        <option value="delete">Eliminación</option>
+                    </optgroup>
+                    <optgroup label="Recorridos">
+                        <option value="preorder">Recorrido Preorden</option>
+                        <option value="inorder">Recorrido Inorden</option>
+                        <option value="postorder">Recorrido Postorden</option>
+                        <option value="bfs">Recorrido BFS</option>
+                    </optgroup>
+                    <optgroup label="Clase completa">
+                        <option value="arbol">Clase ArbolBinarioBST</option>
+                    </optgroup>
+                </select>
+                <button class="modal-close" onclick="closeCompareModal()" title="Cerrar (Esc)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <!-- Columna RECURSIVA -->
+            <div class="code-column">
+                <div class="code-column-header">
+                    <div class="code-column-title recursive">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Versión Recursiva</span>
+                        <span class="code-column-badge badge-recursive">Elegante</span>
+                    </div>
+                    <button class="modal-copy-btn" onclick="copyModalCode('recursive')">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                </div>
+                <div class="code-column-body" id="modal-code-recursive"></div>
+            </div>
+
+            <!-- Columna ITERATIVA -->
+            <div class="code-column">
+                <div class="code-column-header">
+                    <div class="code-column-title iterative">
+                        <i class="fas fa-list-ol"></i>
+                        <span>Versión Iterativa</span>
+                        <span class="code-column-badge badge-iterative">Sin recursión</span>
+                    </div>
+                    <button class="modal-copy-btn" onclick="copyModalCode('iterative')">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                </div>
+                <div class="code-column-body" id="modal-code-iterative"></div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <div>
+                <i class="fas fa-info-circle"></i>
+                <span id="modal-info-text">Cierra con <strong>Esc</strong> o el botón X</span>
+            </div>
+            <label class="sync-scroll-control">
+                <input type="checkbox" id="sync-scroll" checked>
+                <i class="fas fa-link"></i> Desplazamiento sincronizado
+            </label>
+        </div>
+    </div>
+</div>
+
+<!-- Toast notifications -->
+<div id="toast" class="toast">
+    <i class="fas fa-info-circle"></i>
+    <span id="toast-message">Mensaje</span>
+</div>
+
+<script>
+// ==================== ESTRUCTURA BST ====================
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+        this.id = Math.random().toString(36).substr(2, 9);
+    }
+}
+
+class BST {
+    constructor() {
+        this.root = null;
+        this.size = 0;
+    }
+
+    insert(value) {
+        const newNode = new TreeNode(value);
+        if (!this.root) {
+            this.root = newNode;
+            this.size++;
+            return { success: true, path: [], newNode: newNode };
+        }
+        const path = [];
+        let current = this.root;
+        while (true) {
+            path.push(current);
+            if (value === current.value) {
+                return { success: false, path: path, message: 'Valor duplicado' };
+            }
+            if (value < current.value) {
+                if (!current.left) {
+                    current.left = newNode;
+                    this.size++;
+                    return { success: true, path: path, newNode: newNode };
+                }
+                current = current.left;
+            } else {
+                if (!current.right) {
+                    current.right = newNode;
+                    this.size++;
+                    return { success: true, path: path, newNode: newNode };
+                }
+                current = current.right;
+            }
+        }
+    }
+
+    search(value) {
+        const path = [];
+        let current = this.root;
+        while (current) {
+            path.push(current);
+            if (value === current.value) return { found: true, path: path };
+            current = value < current.value ? current.left : current.right;
+        }
+        return { found: false, path: path };
+    }
+
+    delete(value) {
+        const path = [];
+        this.root = this._deleteRec(this.root, value, path);
+        return path;
+    }
+
+    _deleteRec(node, value, path) {
+        if (!node) return null;
+        path.push(node);
+        if (value < node.value) {
+            node.left = this._deleteRec(node.left, value, path);
+        } else if (value > node.value) {
+            node.right = this._deleteRec(node.right, value, path);
+        } else {
+            this.size--;
+            if (!node.left) return node.right;
+            if (!node.right) return node.left;
+            let minNode = node.right;
+            while (minNode.left) minNode = minNode.left;
+            node.value = minNode.value;
+            node.right = this._deleteRec(node.right, minNode.value, []);
+            this.size++; // Compensar
+        }
+        return node;
+    }
+
+    getHeight(node = this.root) {
+        if (!node) return 0;
+        return 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+    }
+
+    findMin() {
+        if (!this.root) return null;
+        let current = this.root;
+        while (current.left) current = current.left;
+        return current.value;
+    }
+
+    findMax() {
+        if (!this.root) return null;
+        let current = this.root;
+        while (current.right) current = current.right;
+        return current.value;
+    }
+
+    preorder(node = this.root, result = []) {
+        if (node) {
+            result.push(node);
+            this.preorder(node.left, result);
+            this.preorder(node.right, result);
+        }
+        return result;
+    }
+
+    inorder(node = this.root, result = []) {
+        if (node) {
+            this.inorder(node.left, result);
+            result.push(node);
+            this.inorder(node.right, result);
+        }
+        return result;
+    }
+
+    postorder(node = this.root, result = []) {
+        if (node) {
+            this.postorder(node.left, result);
+            this.postorder(node.right, result);
+            result.push(node);
+        }
+        return result;
+    }
+
+    bfs() {
+        if (!this.root) return [];
+        const result = [];
+        const queue = [this.root];
+        while (queue.length > 0) {
+            const node = queue.shift();
+            result.push(node);
+            if (node.left) queue.push(node.left);
+            if (node.right) queue.push(node.right);
+        }
+        return result;
+    }
+}
+
+// ==================== VARIABLES GLOBALES ====================
+const bst = new BST();
+let svg, g, zoom;
+let isAnimating = false;
+const NODE_RADIUS = 25;
+
+// ==================== INICIALIZACIÓN D3 ====================
+function initSVG() {
+    svg = d3.select('#tree-svg');
+    
+    // Crear definitiones para gradientes
+    const defs = svg.append('defs');
+    
+    const gradient = defs.append('linearGradient')
+        .attr('id', 'nodeGradient')
+        .attr('x1', '0%').attr('y1', '0%')
+        .attr('x2', '0%').attr('y2', '100%');
+    gradient.append('stop').attr('offset', '0%').attr('stop-color', '#818cf8');
+    gradient.append('stop').attr('offset', '100%').attr('stop-color', '#4f46e5');
+
+    g = svg.append('g').attr('class', 'main-group');
+
+    zoom = d3.zoom()
+        .scaleExtent([0.3, 3])
+        .on('zoom', (event) => {
+            g.attr('transform', event.transform);
+        });
+    
+    svg.call(zoom);
+}
+
+// ==================== RENDERIZADO DEL ÁRBOL ====================
+function renderTree(animate = true) {
+    updateStats();
+    
+    const emptyMsg = document.getElementById('empty-message');
+    if (!bst.root) {
+        emptyMsg.style.display = 'block';
+        g.selectAll('*').remove();
+        return;
+    }
+    emptyMsg.style.display = 'none';
+
+    const svgWidth = document.getElementById('tree-svg').clientWidth;
+    const svgHeight = document.getElementById('tree-svg').clientHeight;
+
+    // Convertir BST a estructura jerárquica
+    function toHierarchy(node) {
+        if (!node) return null;
+        const obj = { name: node.value, id: node.id, nodeRef: node, children: [] };
+        // Para mostrar correctamente posiciones izq/der, agregamos hijos nulos
+        if (node.left || node.right) {
+            obj.children.push(toHierarchy(node.left) || { name: '', id: 'null_' + Math.random(), invisible: true });
+            obj.children.push(toHierarchy(node.right) || { name: '', id: 'null_' + Math.random(), invisible: true });
+        }
+        return obj;
+    }
+
+    const data = toHierarchy(bst.root);
+    const root = d3.hierarchy(data);
+    
+    const treeLayout = d3.tree().size([svgWidth - 80, svgHeight - 80]);
+    treeLayout(root);
+
+    // Centrar
+    const xOffset = 40;
+    const yOffset = 40;
+
+    // Filtrar nodos invisibles para los enlaces y nodos visibles
+    const visibleNodes = root.descendants().filter(d => !d.data.invisible);
+    const visibleLinks = root.links().filter(d => !d.target.data.invisible);
+
+    // ENLACES
+    const links = g.selectAll('.link')
+        .data(visibleLinks, d => d.target.data.id);
+
+    links.exit().transition().duration(300).style('opacity', 0).remove();
+
+    const linksEnter = links.enter()
+        .append('path')
+        .attr('class', 'link')
+        .style('opacity', 0);
+
+    linksEnter.merge(links)
+        .transition().duration(animate ? 600 : 0)
+        .style('opacity', 1)
+        .attr('d', d => {
+            const sx = d.source.x + xOffset;
+            const sy = d.source.y + yOffset;
+            const tx = d.target.x + xOffset;
+            const ty = d.target.y + yOffset;
+            return `M${sx},${sy} C${sx},${(sy+ty)/2} ${tx},${(sy+ty)/2} ${tx},${ty}`;
+        });
+
+    // NODOS
+    const nodes = g.selectAll('.node')
+        .data(visibleNodes, d => d.data.id);
+
+    nodes.exit()
+        .transition().duration(300)
+        .attr('transform', d => `translate(${d.x + xOffset},${d.y + yOffset}) scale(0)`)
+        .style('opacity', 0)
+        .remove();
+
+    const nodesEnter = nodes.enter()
+        .append('g')
+        .attr('class', 'node')
+        .attr('data-id', d => d.data.id)
+        .attr('transform', d => `translate(${d.x + xOffset},${d.y + yOffset}) scale(0)`);
+
+    nodesEnter.append('circle')
+        .attr('r', NODE_RADIUS)
+        .attr('fill', 'url(#nodeGradient)')
+        .attr('stroke', '#4f46e5')
+        .attr('stroke-width', 3);
+
+    nodesEnter.append('text')
+        .text(d => d.data.name);
+
+    nodesEnter.merge(nodes)
+        .transition().duration(animate ? 600 : 0)
+        .attr('transform', d => `translate(${d.x + xOffset},${d.y + yOffset}) scale(1)`);
+
+    nodesEnter.merge(nodes).select('text').text(d => d.data.name);
+}
+
+// ==================== ESTADÍSTICAS ====================
+function updateStats() {
+    document.getElementById('node-count').textContent = bst.size;
+    document.getElementById('tree-height').textContent = bst.getHeight();
+    document.getElementById('min-value').textContent = bst.findMin() ?? '-';
+    document.getElementById('max-value').textContent = bst.findMax() ?? '-';
+}
+
+// ==================== UTILIDADES ====================
+function getSpeed() {
+    return parseInt(document.getElementById('speed-slider').value);
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function showToast(message, type = 'info', duration = 2500) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    const icons = {
+        info: 'fa-info-circle',
+        success: 'fa-check-circle',
+        warning: 'fa-exclamation-triangle',
+        danger: 'fa-times-circle'
+    };
+    toast.className = 'toast ' + type;
+    toast.querySelector('i').className = 'fas ' + icons[type];
+    toastMessage.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+function highlightNode(id, className, duration = null) {
+    const node = d3.select(`g.node[data-id="${id}"]`);
+    node.classed(className, true);
+    if (duration) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                node.classed(className, false);
+                resolve();
+            }, duration);
+        });
+    }
+}
+
+function clearAllHighlights() {
+    g.selectAll('.node')
+        .classed('highlighted', false)
+        .classed('visited', false)
+        .classed('comparing', false)
+        .classed('new-node', false)
+        .classed('found', false)
+        .classed('pulsing', false);
+}
+
+// ==================== INSERCIÓN ====================
+async function insertSingle() {
+    if (isAnimating) {
+        showToast('Espera a que termine la animación actual', 'warning');
+        return;
+    }
+    const input = document.getElementById('single-input');
+    const value = parseInt(input.value);
+    if (isNaN(value)) {
+        showToast('Ingresa un número válido', 'danger');
+        return;
+    }
+    await animateInsert(value);
+    input.value = '';
+    input.focus();
+}
+
+async function animateInsert(value) {
+    isAnimating = true;
+    const stepMode = document.getElementById('step-mode').checked;
+    
+    const result = bst.insert(value);
+    
+    if (!result.success) {
+        showToast(`El valor ${value} ya existe en el árbol`, 'warning');
+        isAnimating = false;
+        return;
+    }
+
+    renderTree(true);
+    await sleep(300);
+
+    // Animar el camino de inserción si hay step mode o si hay path
+    if (result.path.length > 0) {
+        for (const node of result.path) {
+            highlightNode(node.id, 'comparing');
+            if (stepMode) {
+                const comparison = value < node.value ? 'menor' : 'mayor';
+                const direction = value < node.value ? 'izquierda ⬅' : 'derecha ➡';
+                showToast(`${value} es ${comparison} que ${node.value} → voy a la ${direction}`, 'info', getSpeed());
+            }
+            await sleep(getSpeed());
+            d3.select(`g.node[data-id="${node.id}"]`).classed('comparing', false);
+        }
+    }
+
+    // Resaltar nuevo nodo
+    if (result.newNode) {
+        highlightNode(result.newNode.id, 'new-node');
+        highlightNode(result.newNode.id, 'pulsing');
+        await sleep(800);
+        d3.select(`g.node[data-id="${result.newNode.id}"]`)
+            .classed('new-node', false)
+            .classed('pulsing', false);
+    }
+
+    isAnimating = false;
+}
+
+async function loadBatch() {
+    if (isAnimating) {
+        showToast('Espera a que termine la animación actual', 'warning');
+        return;
+    }
+    const input = document.getElementById('batch-input').value.trim();
+    if (!input) {
+        showToast('Ingresa al menos un número', 'warning');
+        return;
+    }
+    const values = input.split(/[\s,]+/).map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+    if (values.length === 0) {
+        showToast('No se encontraron números válidos', 'danger');
+        return;
+    }
+
+    isAnimating = true;
+    for (const value of values) {
+        showToast(`Insertando ${value}...`, 'info', 800);
+        await animateInsertQuick(value);
+        await sleep(getSpeed() / 2);
+    }
+    isAnimating = false;
+    showToast(`✓ Árbol construido con ${values.length} valores`, 'success', 2000);
+}
+
+async function animateInsertQuick(value) {
+    const result = bst.insert(value);
+    if (!result.success) return;
+    renderTree(true);
+    await sleep(400);
+    
+    if (result.newNode) {
+        highlightNode(result.newNode.id, 'new-node');
+        await sleep(500);
+        d3.select(`g.node[data-id="${result.newNode.id}"]`).classed('new-node', false);
+    }
+}
+
+// ==================== BÚSQUEDA ====================
+async function searchValue() {
+    if (isAnimating) {
+        showToast('Espera a que termine la animación actual', 'warning');
+        return;
+    }
+    const value = parseInt(document.getElementById('search-input').value);
+    if (isNaN(value)) {
+        showToast('Ingresa un valor a buscar', 'danger');
+        return;
+    }
+    if (!bst.root) {
+        showToast('El árbol está vacío', 'warning');
+        return;
+    }
+
+    isAnimating = true;
+    clearAllHighlights();
+    const stepMode = document.getElementById('step-mode').checked;
+    const result = bst.search(value);
+
+    for (let i = 0; i < result.path.length; i++) {
+        const node = result.path[i];
+        highlightNode(node.id, 'comparing');
+        
+        if (stepMode) {
+            if (node.value === value) {
+                showToast(`✓ ¡Encontrado! ${value} = ${node.value}`, 'success', getSpeed());
+            } else {
+                const comp = value < node.value ? 'menor' : 'mayor';
+                const dir = value < node.value ? 'izquierda ⬅' : 'derecha ➡';
+                showToast(`${value} es ${comp} que ${node.value} → ${dir}`, 'info', getSpeed());
+            }
+        }
+        
+        await sleep(getSpeed());
+        d3.select(`g.node[data-id="${node.id}"]`).classed('comparing', false);
+        
+        if (node.value === value) {
+            highlightNode(node.id, 'found');
+            highlightNode(node.id, 'pulsing');
+        }
+    }
+
+    if (result.found) {
+        showToast(`✓ Valor ${value} encontrado en ${result.path.length} pasos`, 'success', 3000);
+    } else {
+        showToast(`✗ Valor ${value} NO existe en el árbol`, 'danger', 3000);
+    }
+
+    setTimeout(() => clearAllHighlights(), 3000);
+    isAnimating = false;
+}
+
+// ==================== ELIMINACIÓN ====================
+async function deleteValue() {
+    if (isAnimating) {
+        showToast('Espera a que termine la animación actual', 'warning');
+        return;
+    }
+    const value = parseInt(document.getElementById('search-input').value);
+    if (isNaN(value)) {
+        showToast('Ingresa un valor a eliminar', 'danger');
+        return;
+    }
+    if (!bst.root) {
+        showToast('El árbol está vacío', 'warning');
+        return;
+    }
+
+    const searchResult = bst.search(value);
+    if (!searchResult.found) {
+        showToast(`El valor ${value} no existe`, 'danger');
+        return;
+    }
+
+    isAnimating = true;
+    clearAllHighlights();
+
+    // Animar búsqueda
+    for (const node of searchResult.path) {
+        highlightNode(node.id, 'comparing');
+        await sleep(getSpeed() / 2);
+        d3.select(`g.node[data-id="${node.id}"]`).classed('comparing', false);
+    }
+
+    const nodeToDelete = searchResult.path[searchResult.path.length - 1];
+    highlightNode(nodeToDelete.id, 'comparing');
+    highlightNode(nodeToDelete.id, 'pulsing');
+    await sleep(600);
+
+    bst.delete(value);
+    renderTree(true);
+    showToast(`✓ Valor ${value} eliminado`, 'success', 2000);
+    isAnimating = false;
+}
+
+// ==================== RECORRIDOS ====================
+async function traverse(type) {
+    if (isAnimating) {
+        showToast('Espera a que termine la animación actual', 'warning');
+        return;
+    }
+    if (!bst.root) {
+        showToast('El árbol está vacío', 'warning');
+        return;
+    }
+
+    isAnimating = true;
+    clearAllHighlights();
+    
+    const output = document.getElementById('traversal-output');
+    output.innerHTML = '';
+
+    let sequence = [];
+    let title = '', description = '';
+    
+    switch (type) {
+        case 'preorder':
+            sequence = bst.preorder();
+            title = 'Preorden (Raíz → Izquierda → Derecha)';
+            description = '<strong>Preorden</strong> visita primero la <strong>raíz</strong>, luego el subárbol <strong>izquierdo</strong>, y finalmente el subárbol <strong>derecho</strong>. Útil para copiar árboles y crear expresiones prefijas.';
+            break;
+        case 'inorder':
+            sequence = bst.inorder();
+            title = 'Inorden (Izquierda → Raíz → Derecha)';
+            description = '<strong>Inorden</strong> visita primero el subárbol <strong>izquierdo</strong>, luego la <strong>raíz</strong>, y finalmente el subárbol <strong>derecho</strong>. En un BST produce los valores <strong>ordenados de menor a mayor</strong>.';
+            break;
+        case 'postorder':
+            sequence = bst.postorder();
+            title = 'Postorden (Izquierda → Derecha → Raíz)';
+            description = '<strong>Postorden</strong> visita primero el subárbol <strong>izquierdo</strong>, luego el <strong>derecho</strong>, y finalmente la <strong>raíz</strong>. Ideal para eliminar árboles y evaluar expresiones postfijas.';
+            break;
+        case 'bfs':
+            sequence = bst.bfs();
+            title = 'BFS - Recorrido por Niveles';
+            description = '<strong>BFS (Búsqueda en Anchura)</strong> visita los nodos nivel por nivel, de izquierda a derecha. Usa una <strong>cola (FIFO)</strong> para procesar los nodos.';
+            break;
+    }
+
+    // Mostrar explicación
+    document.getElementById('traversal-explanation').style.display = 'block';
+    document.getElementById('explain-title').textContent = title;
+    document.getElementById('explain-content').innerHTML = description;
+
+    showToast(`Iniciando recorrido: ${title}`, 'info', 1500);
+
+    // Animar cada paso
+    for (let i = 0; i < sequence.length; i++) {
+        const node = sequence[i];
+        
+        // Resaltar nodo actual
+        highlightNode(node.id, 'highlighted');
+        highlightNode(node.id, 'pulsing');
+        
+        // Agregar al panel
+        if (i > 0) {
+            const arrow = document.createElement('span');
+            arrow.className = 'traversal-arrow';
+            arrow.innerHTML = '<i class="fas fa-arrow-right"></i>';
+            output.appendChild(arrow);
+        }
+        
+        const valueSpan = document.createElement('span');
+        valueSpan.className = 'traversal-value';
+        valueSpan.textContent = node.value;
+        output.appendChild(valueSpan);
+
+        await sleep(500);
+        
+        d3.select(`g.node[data-id="${node.id}"]`).classed('pulsing', false);
+        highlightNode(node.id, 'visited');
+        d3.select(`g.node[data-id="${node.id}"]`).classed('highlighted', false);
+    }
+
+    showToast(`✓ Recorrido ${type} completado: ${sequence.length} nodos`, 'success', 2500);
+    isAnimating = false;
+}
+
+function resetHighlight() {
+    clearAllHighlights();
+    document.getElementById('traversal-output').innerHTML = '<span style="color: #64748b; font-style: italic;">Ejecuta un recorrido para ver la secuencia...</span>';
+    document.getElementById('traversal-explanation').style.display = 'none';
+    showToast('Visualización reiniciada', 'info', 1500);
+}
+
+// ==================== UTILIDADES VARIAS ====================
+function clearTree() {
+    if (isAnimating) {
+        showToast('Espera a que termine la animación actual', 'warning');
+        return;
+    }
+    if (!bst.root) {
+        showToast('El árbol ya está vacío', 'info');
+        return;
+    }
+    bst.root = null;
+    bst.size = 0;
+    g.selectAll('*').remove();
+    renderTree(false);
+    document.getElementById('traversal-output').innerHTML = '<span style="color: #64748b; font-style: italic;">Ejecuta un recorrido para ver la secuencia...</span>';
+    document.getElementById('traversal-explanation').style.display = 'none';
+    showToast('Árbol limpiado', 'success', 1500);
+}
+
+function generateRandom() {
+    if (isAnimating) return;
+    bst.root = null;
+    bst.size = 0;
+    const count = 7 + Math.floor(Math.random() * 5);
+    const values = new Set();
+    while (values.size < count) {
+        values.add(Math.floor(Math.random() * 99) + 1);
+    }
+    document.getElementById('batch-input').value = Array.from(values).join(',');
+    g.selectAll('*').remove();
+    loadBatch();
+}
+
+// ==================== TABS ====================
+function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (tab === 'code') showPseudocode();
+    if (tab === 'quiz' && !document.getElementById('quiz-container').innerHTML) generateQuiz();
+}
+
+// ==================== CÓDIGO JAVA (RECURSIVO E ITERATIVO) ====================
+// Helper para escapar HTML
+function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Tokenizador Java: procesa el código en una sola pasada para evitar
+// que las palabras dentro de comentarios o strings se vuelvan a colorear.
+function colorJava(code) {
+    const KEYWORDS = new Set([
+        'public','private','protected','static','final','class','new','this',
+        'return','if','else','while','for','do','switch','case','break',
+        'continue','null','true','false','import','package','extends',
+        'implements','interface','abstract','throws','throw','try','catch',
+        'finally','super','default','instanceof','enum'
+    ]);
+    const TYPES = new Set([
+        'int','String','boolean','void','double','float','long','char',
+        'byte','short','Object','Integer','Stack','Queue','LinkedList',
+        'List','ArrayList','HashMap','Scanner','System','Math'
+    ]);
+
+    let i = 0;
+    let out = '';
+    const n = code.length;
+
+    // Escapa un fragmento de texto para HTML
+    function escFragment(s) {
+        return s.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+    }
+
+    while (i < n) {
+        const ch = code[i];
+        const next = code[i + 1];
+
+        // 1) Comentario de línea  //...
+        if (ch === '/' && next === '/') {
+            let j = i;
+            while (j < n && code[j] !== '\n') j++;
+            out += '<span class="comment">' + escFragment(code.substring(i, j)) + '</span>';
+            i = j;
+            continue;
+        }
+
+        // 2) Comentario de bloque  /* ... */  y JavaDoc /** ... */
+        if (ch === '/' && next === '*') {
+            let j = i + 2;
+            while (j < n && !(code[j] === '*' && code[j + 1] === '/')) j++;
+            j = Math.min(j + 2, n);
+            out += '<span class="comment">' + escFragment(code.substring(i, j)) + '</span>';
+            i = j;
+            continue;
+        }
+
+        // 3) String  "..."
+        if (ch === '"') {
+            let j = i + 1;
+            while (j < n && code[j] !== '"') {
+                if (code[j] === '\\' && j + 1 < n) j += 2;
+                else j++;
+            }
+            j = Math.min(j + 1, n);
+            out += '<span class="string">' + escFragment(code.substring(i, j)) + '</span>';
+            i = j;
+            continue;
+        }
+
+        // 4) Caracter  '...'
+        if (ch === "'") {
+            let j = i + 1;
+            while (j < n && code[j] !== "'") {
+                if (code[j] === '\\' && j + 1 < n) j += 2;
+                else j++;
+            }
+            j = Math.min(j + 1, n);
+            out += '<span class="string">' + escFragment(code.substring(i, j)) + '</span>';
+            i = j;
+            continue;
+        }
+
+        // 5) Anotación  @Override
+        if (ch === '@' && /[A-Za-z_]/.test(next || '')) {
+            let j = i + 1;
+            while (j < n && /[A-Za-z0-9_]/.test(code[j])) j++;
+            out += '<span class="annotation">' + escFragment(code.substring(i, j)) + '</span>';
+            i = j;
+            continue;
+        }
+
+        // 6) Número
+        if (/[0-9]/.test(ch)) {
+            let j = i;
+            while (j < n && /[0-9.fLdD]/.test(code[j])) j++;
+            out += '<span class="number">' + escFragment(code.substring(i, j)) + '</span>';
+            i = j;
+            continue;
+        }
+
+        // 7) Identificador / palabra clave / tipo
+        if (/[A-Za-z_$]/.test(ch)) {
+            let j = i;
+            while (j < n && /[A-Za-z0-9_$]/.test(code[j])) j++;
+            const word = code.substring(i, j);
+            if (KEYWORDS.has(word)) {
+                out += '<span class="keyword">' + word + '</span>';
+            } else if (TYPES.has(word)) {
+                out += '<span class="type">' + word + '</span>';
+            } else {
+                out += escFragment(word);
+            }
+            i = j;
+            continue;
+        }
+
+        // 8) Cualquier otro carácter (operadores, espacios, puntuación)
+        out += escFragment(ch);
+        i++;
+    }
+
+    return out;
+}
+
+const javaCodes = {
+    nodo: {
+        recursive: `// ============================================
+// Archivo: Nodo.java
+// Autor: Mg. Julio Andrés Silva Aragón
+// Curso: Algoritmos II - Uniremington Yopal
+// ============================================
+package bst;
+
+/**
+ * Clase que representa un nodo del Árbol Binario de Búsqueda (BST).
+ * Cada nodo almacena un valor entero y referencias a sus hijos
+ * izquierdo y derecho.
+ */
+public class Nodo {
+
+    // Atributos
+    private int valor;
+    private Nodo izquierdo;
+    private Nodo derecho;
+
+    /**
+     * Constructor que inicializa un nodo con un valor entero.
+     * Los hijos se inicializan en null (nodo hoja).
+     */
+    public Nodo(int valor) {
+        this.valor = valor;
+        this.izquierdo = null;
+        this.derecho = null;
+    }
+
+    // Getters y Setters
+    public int getValor() {
+        return valor;
+    }
+
+    public void setValor(int valor) {
+        this.valor = valor;
+    }
+
+    public Nodo getIzquierdo() {
+        return izquierdo;
+    }
+
+    public void setIzquierdo(Nodo izquierdo) {
+        this.izquierdo = izquierdo;
+    }
+
+    public Nodo getDerecho() {
+        return derecho;
+    }
+
+    public void setDerecho(Nodo derecho) {
+        this.derecho = derecho;
+    }
+
+    /**
+     * Indica si el nodo es una hoja (sin hijos).
+     */
+    public boolean esHoja() {
+        return izquierdo == null && derecho == null;
+    }
+
+    @Override
+    public String toString() {
+        return "Nodo[" + valor + "]";
+    }
+}`,
+        // La clase Nodo es la misma en ambas versiones
+        iterative: null
+    },
+
+    arbol: {
+        recursive: `// ============================================
+// Archivo: ArbolBinarioBST.java  (VERSIÓN RECURSIVA)
+// Autor: Mg. Julio Andrés Silva Aragón
+// Curso: Algoritmos II - Uniremington Yopal
+// ============================================
+package bst;
+
+/**
+ * Implementación del Árbol Binario de Búsqueda (BST)
+ * usando RECURSIVIDAD para todas las operaciones.
+ *
+ * Propiedad del BST:
+ *   - Hijo izquierdo  < padre
+ *   - Hijo derecho    > padre
+ *   - No se admiten valores duplicados
+ */
+public class ArbolBinarioBST {
+
+    private Nodo raiz;
+
+    public ArbolBinarioBST() {
+        this.raiz = null;
+    }
+
+    // ---------- INSERCIÓN ----------
+    public void insertar(int valor) {
+        raiz = insertarRec(raiz, valor);
+    }
+
+    private Nodo insertarRec(Nodo nodo, int valor) {
+        // Caso base: encontramos un espacio vacío
+        if (nodo == null) {
+            return new Nodo(valor);
+        }
+        // Llamada recursiva según comparación
+        if (valor < nodo.getValor()) {
+            nodo.setIzquierdo(insertarRec(nodo.getIzquierdo(), valor));
+        } else if (valor > nodo.getValor()) {
+            nodo.setDerecho(insertarRec(nodo.getDerecho(), valor));
+        }
+        // Si valor == nodo.getValor() -> duplicado, no se inserta
+        return nodo;
+    }
+
+    // ---------- BÚSQUEDA ----------
+    public boolean buscar(int valor) {
+        return buscarRec(raiz, valor);
+    }
+
+    private boolean buscarRec(Nodo nodo, int valor) {
+        if (nodo == null) return false;
+        if (valor == nodo.getValor()) return true;
+        if (valor < nodo.getValor())
+            return buscarRec(nodo.getIzquierdo(), valor);
+        else
+            return buscarRec(nodo.getDerecho(), valor);
+    }
+
+    // ---------- ELIMINACIÓN ----------
+    public void eliminar(int valor) {
+        raiz = eliminarRec(raiz, valor);
+    }
+
+    private Nodo eliminarRec(Nodo nodo, int valor) {
+        if (nodo == null) return null;
+
+        if (valor < nodo.getValor()) {
+            nodo.setIzquierdo(eliminarRec(nodo.getIzquierdo(), valor));
+        } else if (valor > nodo.getValor()) {
+            nodo.setDerecho(eliminarRec(nodo.getDerecho(), valor));
+        } else {
+            // Nodo encontrado - tres casos:
+            // Caso 1: sin hijos o solo hijo derecho
+            if (nodo.getIzquierdo() == null) return nodo.getDerecho();
+            // Caso 2: solo hijo izquierdo
+            if (nodo.getDerecho() == null) return nodo.getIzquierdo();
+            // Caso 3: dos hijos -> usar el sucesor inorden (mínimo derecho)
+            int sucesor = minimoValor(nodo.getDerecho());
+            nodo.setValor(sucesor);
+            nodo.setDerecho(eliminarRec(nodo.getDerecho(), sucesor));
+        }
+        return nodo;
+    }
+
+    private int minimoValor(Nodo nodo) {
+        int min = nodo.getValor();
+        while (nodo.getIzquierdo() != null) {
+            nodo = nodo.getIzquierdo();
+            min = nodo.getValor();
+        }
+        return min;
+    }
+
+    // ---------- RECORRIDOS RECURSIVOS ----------
+    public void preorden() {
+        System.out.print("Preorden: ");
+        preordenRec(raiz);
+        System.out.println();
+    }
+
+    private void preordenRec(Nodo nodo) {
+        if (nodo != null) {
+            System.out.print(nodo.getValor() + " ");  // 1. Raíz
+            preordenRec(nodo.getIzquierdo());         // 2. Izquierda
+            preordenRec(nodo.getDerecho());           // 3. Derecha
+        }
+    }
+
+    public void inorden() {
+        System.out.print("Inorden: ");
+        inordenRec(raiz);
+        System.out.println();
+    }
+
+    private void inordenRec(Nodo nodo) {
+        if (nodo != null) {
+            inordenRec(nodo.getIzquierdo());          // 1. Izquierda
+            System.out.print(nodo.getValor() + " ");  // 2. Raíz
+            inordenRec(nodo.getDerecho());            // 3. Derecha
+        }
+    }
+
+    public void postorden() {
+        System.out.print("Postorden: ");
+        postordenRec(raiz);
+        System.out.println();
+    }
+
+    private void postordenRec(Nodo nodo) {
+        if (nodo != null) {
+            postordenRec(nodo.getIzquierdo());        // 1. Izquierda
+            postordenRec(nodo.getDerecho());          // 2. Derecha
+            System.out.print(nodo.getValor() + " ");  // 3. Raíz
+        }
+    }
+
+    // ---------- UTILIDADES ----------
+    public int altura() {
+        return alturaRec(raiz);
+    }
+
+    private int alturaRec(Nodo nodo) {
+        if (nodo == null) return 0;
+        return 1 + Math.max(alturaRec(nodo.getIzquierdo()),
+                            alturaRec(nodo.getDerecho()));
+    }
+
+    public boolean estaVacio() {
+        return raiz == null;
+    }
+
+    public Nodo getRaiz() {
+        return raiz;
+    }
+}`,
+        iterative: `// ============================================
+// Archivo: ArbolBinarioBST.java  (VERSIÓN ITERATIVA)
+// Autor: Mg. Julio Andrés Silva Aragón
+// Curso: Algoritmos II - Uniremington Yopal
+// ============================================
+package bst;
+
+import java.util.Stack;
+import java.util.Queue;
+import java.util.LinkedList;
+
+/**
+ * Implementación del Árbol Binario de Búsqueda (BST)
+ * SIN RECURSIVIDAD. Usa estructuras auxiliares:
+ *   - Pila (Stack) para simular la pila de llamadas en recorridos DFS
+ *   - Cola (Queue) para el recorrido BFS por niveles
+ *
+ * Ventaja: evita el desbordamiento de pila en árboles muy profundos.
+ */
+public class ArbolBinarioBST {
+
+    private Nodo raiz;
+
+    public ArbolBinarioBST() {
+        this.raiz = null;
+    }
+
+    // ---------- INSERCIÓN ITERATIVA ----------
+    public void insertar(int valor) {
+        Nodo nuevo = new Nodo(valor);
+        if (raiz == null) {
+            raiz = nuevo;
+            return;
+        }
+        Nodo actual = raiz;
+        Nodo padre = null;
+        while (actual != null) {
+            padre = actual;
+            if (valor == actual.getValor()) return; // duplicado
+            if (valor < actual.getValor()) {
+                actual = actual.getIzquierdo();
+            } else {
+                actual = actual.getDerecho();
+            }
+        }
+        // Enlazar el nuevo nodo al padre
+        if (valor < padre.getValor()) {
+            padre.setIzquierdo(nuevo);
+        } else {
+            padre.setDerecho(nuevo);
+        }
+    }
+
+    // ---------- BÚSQUEDA ITERATIVA ----------
+    public boolean buscar(int valor) {
+        Nodo actual = raiz;
+        while (actual != null) {
+            if (valor == actual.getValor()) return true;
+            actual = (valor < actual.getValor())
+                    ? actual.getIzquierdo()
+                    : actual.getDerecho();
+        }
+        return false;
+    }
+
+    // ---------- ELIMINACIÓN ITERATIVA ----------
+    public void eliminar(int valor) {
+        Nodo padre = null;
+        Nodo actual = raiz;
+        // 1. Localizar el nodo y su padre
+        while (actual != null && actual.getValor() != valor) {
+            padre = actual;
+            actual = (valor < actual.getValor())
+                    ? actual.getIzquierdo()
+                    : actual.getDerecho();
+        }
+        if (actual == null) return; // no existe
+
+        // 2. Caso con dos hijos: reemplazar con sucesor inorden
+        if (actual.getIzquierdo() != null && actual.getDerecho() != null) {
+            Nodo sucesorPadre = actual;
+            Nodo sucesor = actual.getDerecho();
+            while (sucesor.getIzquierdo() != null) {
+                sucesorPadre = sucesor;
+                sucesor = sucesor.getIzquierdo();
+            }
+            actual.setValor(sucesor.getValor());
+            // Ahora hay que eliminar el sucesor (que tiene 0 o 1 hijo)
+            if (sucesorPadre == actual) {
+                sucesorPadre.setDerecho(sucesor.getDerecho());
+            } else {
+                sucesorPadre.setIzquierdo(sucesor.getDerecho());
+            }
+            return;
+        }
+
+        // 3. Caso con 0 o 1 hijo
+        Nodo reemplazo = (actual.getIzquierdo() != null)
+                ? actual.getIzquierdo()
+                : actual.getDerecho();
+
+        if (padre == null) {
+            raiz = reemplazo; // era la raíz
+        } else if (padre.getIzquierdo() == actual) {
+            padre.setIzquierdo(reemplazo);
+        } else {
+            padre.setDerecho(reemplazo);
+        }
+    }
+
+    // ---------- RECORRIDOS ITERATIVOS (usando Pila) ----------
+    public void preorden() {
+        System.out.print("Preorden: ");
+        if (raiz == null) { System.out.println(); return; }
+        Stack<Nodo> pila = new Stack<>();
+        pila.push(raiz);
+        while (!pila.isEmpty()) {
+            Nodo actual = pila.pop();
+            System.out.print(actual.getValor() + " ");
+            // Se apila primero el derecho para que el izquierdo salga primero
+            if (actual.getDerecho() != null) pila.push(actual.getDerecho());
+            if (actual.getIzquierdo() != null) pila.push(actual.getIzquierdo());
+        }
+        System.out.println();
+    }
+
+    public void inorden() {
+        System.out.print("Inorden: ");
+        Stack<Nodo> pila = new Stack<>();
+        Nodo actual = raiz;
+        while (actual != null || !pila.isEmpty()) {
+            // Bajar lo más a la izquierda apilando
+            while (actual != null) {
+                pila.push(actual);
+                actual = actual.getIzquierdo();
+            }
+            actual = pila.pop();
+            System.out.print(actual.getValor() + " ");
+            actual = actual.getDerecho();
+        }
+        System.out.println();
+    }
+
+    public void postorden() {
+        System.out.print("Postorden: ");
+        if (raiz == null) { System.out.println(); return; }
+        // Truco: usar 2 pilas, una para procesar y otra para invertir el orden
+        Stack<Nodo> pila1 = new Stack<>();
+        Stack<Nodo> pila2 = new Stack<>();
+        pila1.push(raiz);
+        while (!pila1.isEmpty()) {
+            Nodo actual = pila1.pop();
+            pila2.push(actual);
+            if (actual.getIzquierdo() != null) pila1.push(actual.getIzquierdo());
+            if (actual.getDerecho() != null) pila1.push(actual.getDerecho());
+        }
+        while (!pila2.isEmpty()) {
+            System.out.print(pila2.pop().getValor() + " ");
+        }
+        System.out.println();
+    }
+
+    // ---------- BFS - Recorrido por niveles (usa Cola) ----------
+    public void bfs() {
+        System.out.print("BFS: ");
+        if (raiz == null) { System.out.println(); return; }
+        Queue<Nodo> cola = new LinkedList<>();
+        cola.offer(raiz);
+        while (!cola.isEmpty()) {
+            Nodo actual = cola.poll();
+            System.out.print(actual.getValor() + " ");
+            if (actual.getIzquierdo() != null) cola.offer(actual.getIzquierdo());
+            if (actual.getDerecho() != null) cola.offer(actual.getDerecho());
+        }
+        System.out.println();
+    }
+
+    // ---------- ALTURA ITERATIVA (usando BFS) ----------
+    public int altura() {
+        if (raiz == null) return 0;
+        Queue<Nodo> cola = new LinkedList<>();
+        cola.offer(raiz);
+        int altura = 0;
+        while (!cola.isEmpty()) {
+            int tamNivel = cola.size();
+            altura++;
+            for (int i = 0; i < tamNivel; i++) {
+                Nodo actual = cola.poll();
+                if (actual.getIzquierdo() != null) cola.offer(actual.getIzquierdo());
+                if (actual.getDerecho() != null) cola.offer(actual.getDerecho());
+            }
+        }
+        return altura;
+    }
+
+    public boolean estaVacio() {
+        return raiz == null;
+    }
+
+    public Nodo getRaiz() {
+        return raiz;
+    }
+}`
+    },
+
+    main: {
+        recursive: `// ============================================
+// Archivo: Main.java
+// Autor: Mg. Julio Andrés Silva Aragón
+// Curso: Algoritmos II - Uniremington Yopal
+// ============================================
+package bst;
+
+import java.util.Scanner;
+
+/**
+ * Programa principal que permite al usuario interactuar
+ * con el Árbol Binario de Búsqueda (BST) mediante un menú
+ * y entrada de datos por teclado usando Scanner.
+ */
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        ArbolBinarioBST arbol = new ArbolBinarioBST();
+        int opcion;
+
+        System.out.println("=================================================");
+        System.out.println("  ARBOL BINARIO DE BUSQUEDA (BST) - Algoritmos II");
+        System.out.println("  Uniremington Yopal - Casanare");
+        System.out.println("=================================================");
+
+        do {
+            mostrarMenu();
+            System.out.print("Seleccione una opcion: ");
+            opcion = leerEntero(sc);
+
+            switch (opcion) {
+                case 1:
+                    System.out.print("Ingrese el valor a insertar: ");
+                    int valor = leerEntero(sc);
+                    arbol.insertar(valor);
+                    System.out.println("Valor " + valor + " insertado.");
+                    break;
+
+                case 2:
+                    System.out.print("Cuantos valores desea cargar? ");
+                    int n = leerEntero(sc);
+                    System.out.println("Ingrese " + n + " valores separados por Enter:");
+                    for (int i = 0; i < n; i++) {
+                        System.out.print("Valor [" + (i + 1) + "]: ");
+                        int v = leerEntero(sc);
+                        arbol.insertar(v);
+                    }
+                    System.out.println("Carga masiva completada.");
+                    break;
+
+                case 3:
+                    System.out.print("Ingrese el valor a buscar: ");
+                    int buscar = leerEntero(sc);
+                    if (arbol.buscar(buscar))
+                        System.out.println("El valor " + buscar + " SI existe.");
+                    else
+                        System.out.println("El valor " + buscar + " NO existe.");
+                    break;
+
+                case 4:
+                    System.out.print("Ingrese el valor a eliminar: ");
+                    int eliminar = leerEntero(sc);
+                    arbol.eliminar(eliminar);
+                    System.out.println("Operacion de eliminacion ejecutada.");
+                    break;
+
+                case 5:
+                    if (arbol.estaVacio()) {
+                        System.out.println("El arbol esta vacio.");
+                    } else {
+                        arbol.preorden();
+                    }
+                    break;
+
+                case 6:
+                    if (arbol.estaVacio()) {
+                        System.out.println("El arbol esta vacio.");
+                    } else {
+                        arbol.inorden();
+                    }
+                    break;
+
+                case 7:
+                    if (arbol.estaVacio()) {
+                        System.out.println("El arbol esta vacio.");
+                    } else {
+                        arbol.postorden();
+                    }
+                    break;
+
+                case 8:
+                    System.out.println("Altura del arbol: " + arbol.altura());
+                    break;
+
+                case 0:
+                    System.out.println("Saliendo del programa. Hasta pronto!");
+                    break;
+
+                default:
+                    System.out.println("Opcion no valida. Intente de nuevo.");
+            }
+        } while (opcion != 0);
+
+        sc.close();
+    }
+
+    private static void mostrarMenu() {
+        System.out.println("\\n--------- MENU ---------");
+        System.out.println("1. Insertar un valor");
+        System.out.println("2. Cargar varios valores");
+        System.out.println("3. Buscar un valor");
+        System.out.println("4. Eliminar un valor");
+        System.out.println("5. Recorrido PREORDEN");
+        System.out.println("6. Recorrido INORDEN");
+        System.out.println("7. Recorrido POSTORDEN");
+        System.out.println("8. Mostrar altura del arbol");
+        System.out.println("0. Salir");
+        System.out.println("------------------------");
+    }
+
+    /**
+     * Lectura segura de enteros: valida que sea numero
+     * y maneja errores de entrada.
+     */
+    private static int leerEntero(Scanner sc) {
+        while (!sc.hasNextInt()) {
+            System.out.print("Entrada invalida. Ingrese un numero entero: ");
+            sc.next();
+        }
+        int valor = sc.nextInt();
+        sc.nextLine(); // limpiar buffer
+        return valor;
+    }
+}`,
+        iterative: null  // Main es el mismo en ambas versiones
+    },
+
+    // ---------- OPERACIONES INDIVIDUALES ----------
+    insert: {
+        recursive: `// ============================================
+// INSERCION - Version RECURSIVA
+// ============================================
+public void insertar(int valor) {
+    raiz = insertarRec(raiz, valor);
+}
+
+private Nodo insertarRec(Nodo nodo, int valor) {
+    // Caso base: posicion vacia encontrada
+    if (nodo == null) {
+        return new Nodo(valor);
+    }
+    // Comparamos y descendemos recursivamente
+    if (valor < nodo.getValor()) {
+        nodo.setIzquierdo(insertarRec(nodo.getIzquierdo(), valor));
+    } else if (valor > nodo.getValor()) {
+        nodo.setDerecho(insertarRec(nodo.getDerecho(), valor));
+    }
+    // Si es igual, no insertamos (no se permiten duplicados)
+    return nodo;
+}
+
+/*
+ * Ventaja: codigo elegante y corto.
+ * Desventaja: usa pila de llamadas; en arboles muy
+ * profundos puede causar StackOverflowError.
+ */`,
+        iterative: `// ============================================
+// INSERCION - Version ITERATIVA (sin recursion)
+// ============================================
+public void insertar(int valor) {
+    Nodo nuevo = new Nodo(valor);
+
+    // Caso 1: arbol vacio
+    if (raiz == null) {
+        raiz = nuevo;
+        return;
+    }
+
+    // Caso 2: descender hasta encontrar la posicion
+    Nodo actual = raiz;
+    Nodo padre = null;
+
+    while (actual != null) {
+        padre = actual;
+        if (valor == actual.getValor()) {
+            return; // duplicado: no se inserta
+        }
+        if (valor < actual.getValor()) {
+            actual = actual.getIzquierdo();
+        } else {
+            actual = actual.getDerecho();
+        }
+    }
+
+    // Caso 3: enlazar al padre encontrado
+    if (valor < padre.getValor()) {
+        padre.setIzquierdo(nuevo);
+    } else {
+        padre.setDerecho(nuevo);
+    }
+}
+
+/*
+ * Ventaja: no consume pila de llamadas, no genera
+ * StackOverflowError ni siquiera en arboles enormes.
+ * Desventaja: codigo mas largo y con mas variables.
+ */`
+    },
+
+    search: {
+        recursive: `// ============================================
+// BUSQUEDA - Version RECURSIVA
+// ============================================
+public boolean buscar(int valor) {
+    return buscarRec(raiz, valor);
+}
+
+private boolean buscarRec(Nodo nodo, int valor) {
+    // Caso base 1: no encontrado
+    if (nodo == null) return false;
+
+    // Caso base 2: encontrado
+    if (valor == nodo.getValor()) return true;
+
+    // Caso recursivo: descender por el lado correcto
+    if (valor < nodo.getValor()) {
+        return buscarRec(nodo.getIzquierdo(), valor);
+    } else {
+        return buscarRec(nodo.getDerecho(), valor);
+    }
+}
+
+/*
+ * Complejidad: O(log n) en promedio, O(n) en peor caso.
+ */`,
+        iterative: `// ============================================
+// BUSQUEDA - Version ITERATIVA (sin recursion)
+// ============================================
+public boolean buscar(int valor) {
+    Nodo actual = raiz;
+
+    while (actual != null) {
+        // Encontrado
+        if (valor == actual.getValor()) {
+            return true;
+        }
+        // Decidir por que rama bajar
+        if (valor < actual.getValor()) {
+            actual = actual.getIzquierdo();
+        } else {
+            actual = actual.getDerecho();
+        }
+    }
+
+    return false; // se llego a null sin encontrarlo
+}
+
+/*
+ * Misma complejidad O(log n) promedio, pero usa
+ * memoria constante O(1) en lugar de la pila de
+ * llamadas que usa la version recursiva.
+ */`
+    },
+
+    delete: {
+        recursive: `// ============================================
+// ELIMINACION - Version RECURSIVA
+// ============================================
+public void eliminar(int valor) {
+    raiz = eliminarRec(raiz, valor);
+}
+
+private Nodo eliminarRec(Nodo nodo, int valor) {
+    if (nodo == null) return null;
+
+    // 1. Buscar el nodo descendiendo recursivamente
+    if (valor < nodo.getValor()) {
+        nodo.setIzquierdo(eliminarRec(nodo.getIzquierdo(), valor));
+    } else if (valor > nodo.getValor()) {
+        nodo.setDerecho(eliminarRec(nodo.getDerecho(), valor));
+    } else {
+        // 2. Nodo encontrado: tres casos
+
+        // Caso A: sin hijos o solo hijo derecho
+        if (nodo.getIzquierdo() == null) {
+            return nodo.getDerecho();
+        }
+        // Caso B: solo hijo izquierdo
+        if (nodo.getDerecho() == null) {
+            return nodo.getIzquierdo();
+        }
+        // Caso C: dos hijos - sucesor inorden (minimo del subarbol derecho)
+        int sucesor = minimoValor(nodo.getDerecho());
+        nodo.setValor(sucesor);
+        nodo.setDerecho(eliminarRec(nodo.getDerecho(), sucesor));
+    }
+    return nodo;
+}
+
+private int minimoValor(Nodo nodo) {
+    int min = nodo.getValor();
+    while (nodo.getIzquierdo() != null) {
+        nodo = nodo.getIzquierdo();
+        min = nodo.getValor();
+    }
+    return min;
+}`,
+        iterative: `// ============================================
+// ELIMINACION - Version ITERATIVA (sin recursion)
+// ============================================
+public void eliminar(int valor) {
+    Nodo padre = null;
+    Nodo actual = raiz;
+
+    // 1. Localizar el nodo y guardar su padre
+    while (actual != null && actual.getValor() != valor) {
+        padre = actual;
+        if (valor < actual.getValor()) {
+            actual = actual.getIzquierdo();
+        } else {
+            actual = actual.getDerecho();
+        }
+    }
+    if (actual == null) return; // no existe
+
+    // 2. Caso con DOS hijos: reemplazar con sucesor inorden
+    if (actual.getIzquierdo() != null && actual.getDerecho() != null) {
+        Nodo sucesorPadre = actual;
+        Nodo sucesor = actual.getDerecho();
+        while (sucesor.getIzquierdo() != null) {
+            sucesorPadre = sucesor;
+            sucesor = sucesor.getIzquierdo();
+        }
+        // Copiar valor del sucesor
+        actual.setValor(sucesor.getValor());
+        // Desconectar al sucesor (tiene 0 o 1 hijo)
+        if (sucesorPadre == actual) {
+            sucesorPadre.setDerecho(sucesor.getDerecho());
+        } else {
+            sucesorPadre.setIzquierdo(sucesor.getDerecho());
+        }
+        return;
+    }
+
+    // 3. Caso con 0 o 1 hijo
+    Nodo reemplazo = (actual.getIzquierdo() != null)
+            ? actual.getIzquierdo()
+            : actual.getDerecho();
+
+    if (padre == null) {
+        raiz = reemplazo; // se elimino la raiz
+    } else if (padre.getIzquierdo() == actual) {
+        padre.setIzquierdo(reemplazo);
+    } else {
+        padre.setDerecho(reemplazo);
+    }
+}`
+    },
+
+    preorder: {
+        recursive: `// ============================================
+// PREORDEN - Version RECURSIVA
+// Orden: RAIZ -> IZQUIERDA -> DERECHA
+// ============================================
+public void preorden() {
+    System.out.print("Preorden: ");
+    preordenRec(raiz);
+    System.out.println();
+}
+
+private void preordenRec(Nodo nodo) {
+    if (nodo != null) {
+        System.out.print(nodo.getValor() + " ");  // 1. Raiz
+        preordenRec(nodo.getIzquierdo());          // 2. Izquierda
+        preordenRec(nodo.getDerecho());            // 3. Derecha
+    }
+}
+
+/*
+ * Util para: copiar arboles, generar expresiones prefijas,
+ * serializar la estructura del arbol.
+ */`,
+        iterative: `// ============================================
+// PREORDEN - Version ITERATIVA (con Stack)
+// Orden: RAIZ -> IZQUIERDA -> DERECHA
+// ============================================
+import java.util.Stack;
+
+public void preorden() {
+    System.out.print("Preorden: ");
+    if (raiz == null) { System.out.println(); return; }
+
+    Stack<Nodo> pila = new Stack<>();
+    pila.push(raiz);
+
+    while (!pila.isEmpty()) {
+        Nodo actual = pila.pop();
+        System.out.print(actual.getValor() + " ");
+
+        // IMPORTANTE: apilar primero el DERECHO y luego el IZQUIERDO
+        // para que el izquierdo se procese primero (LIFO de la pila)
+        if (actual.getDerecho() != null) {
+            pila.push(actual.getDerecho());
+        }
+        if (actual.getIzquierdo() != null) {
+            pila.push(actual.getIzquierdo());
+        }
+    }
+    System.out.println();
+}
+
+/*
+ * La pila explicita reemplaza a la pila de llamadas
+ * recursiva. Es equivalente funcionalmente pero usa
+ * memoria del heap en lugar del stack del programa.
+ */`
+    },
+
+    inorder: {
+        recursive: `// ============================================
+// INORDEN - Version RECURSIVA
+// Orden: IZQUIERDA -> RAIZ -> DERECHA
+// En un BST produce los valores ORDENADOS ascendentemente!
+// ============================================
+public void inorden() {
+    System.out.print("Inorden: ");
+    inordenRec(raiz);
+    System.out.println();
+}
+
+private void inordenRec(Nodo nodo) {
+    if (nodo != null) {
+        inordenRec(nodo.getIzquierdo());           // 1. Izquierda
+        System.out.print(nodo.getValor() + " ");   // 2. Raiz
+        inordenRec(nodo.getDerecho());             // 3. Derecha
+    }
+}
+
+/*
+ * Aplicacion clave: ordenar valores en O(n) si ya
+ * estan en un BST.
+ */`,
+        iterative: `// ============================================
+// INORDEN - Version ITERATIVA (con Stack)
+// Orden: IZQUIERDA -> RAIZ -> DERECHA
+// ============================================
+import java.util.Stack;
+
+public void inorden() {
+    System.out.print("Inorden: ");
+    Stack<Nodo> pila = new Stack<>();
+    Nodo actual = raiz;
+
+    while (actual != null || !pila.isEmpty()) {
+        // 1. Bajar lo mas a la izquierda posible, apilando cada nodo
+        while (actual != null) {
+            pila.push(actual);
+            actual = actual.getIzquierdo();
+        }
+
+        // 2. Procesar el nodo mas profundo de la pila
+        actual = pila.pop();
+        System.out.print(actual.getValor() + " ");
+
+        // 3. Pasar al subarbol derecho
+        actual = actual.getDerecho();
+    }
+    System.out.println();
+}
+
+/*
+ * Patron clasico: empuja-mientras-bajes-izquierda, luego
+ * saca-procesa-ve-a-la-derecha. Equivale exactamente a
+ * la version recursiva pero usando una pila propia.
+ */`
+    },
+
+    postorder: {
+        recursive: `// ============================================
+// POSTORDEN - Version RECURSIVA
+// Orden: IZQUIERDA -> DERECHA -> RAIZ
+// ============================================
+public void postorden() {
+    System.out.print("Postorden: ");
+    postordenRec(raiz);
+    System.out.println();
+}
+
+private void postordenRec(Nodo nodo) {
+    if (nodo != null) {
+        postordenRec(nodo.getIzquierdo());         // 1. Izquierda
+        postordenRec(nodo.getDerecho());           // 2. Derecha
+        System.out.print(nodo.getValor() + " ");   // 3. Raiz
+    }
+}
+
+/*
+ * Util para: eliminar arboles (los hijos antes que el padre),
+ * evaluar expresiones postfijas, calcular tamaños de directorios.
+ */`,
+        iterative: `// ============================================
+// POSTORDEN - Version ITERATIVA (con 2 Pilas)
+// Orden: IZQUIERDA -> DERECHA -> RAIZ
+// ============================================
+import java.util.Stack;
+
+public void postorden() {
+    System.out.print("Postorden: ");
+    if (raiz == null) { System.out.println(); return; }
+
+    // Truco: usar 2 pilas. La pila1 simula un preorden modificado
+    // (raiz, derecha, izquierda) y la pila2 invierte ese orden,
+    // resultando en (izquierda, derecha, raiz) = postorden.
+    Stack<Nodo> pila1 = new Stack<>();
+    Stack<Nodo> pila2 = new Stack<>();
+    pila1.push(raiz);
+
+    while (!pila1.isEmpty()) {
+        Nodo actual = pila1.pop();
+        pila2.push(actual);
+
+        // Apilar primero IZQUIERDO, luego DERECHO
+        // (al pasar a pila2 se invertira)
+        if (actual.getIzquierdo() != null) {
+            pila1.push(actual.getIzquierdo());
+        }
+        if (actual.getDerecho() != null) {
+            pila1.push(actual.getDerecho());
+        }
+    }
+
+    // Vaciar pila2: imprime en orden postorden
+    while (!pila2.isEmpty()) {
+        System.out.print(pila2.pop().getValor() + " ");
+    }
+    System.out.println();
+}
+
+/*
+ * El postorden iterativo es el mas complejo de los tres
+ * recorridos clasicos. Existen versiones con una sola pila
+ * pero requieren marcar nodos visitados.
+ */`
+    },
+
+    bfs: {
+        recursive: `// ============================================
+// BFS - Recorrido por NIVELES
+// El BFS es naturalmente ITERATIVO porque usa una COLA.
+// La "version recursiva" se logra procesando un nivel a
+// la vez con recursividad sobre el nivel.
+// ============================================
+
+public void bfs() {
+    System.out.print("BFS (por niveles): ");
+    int alt = altura();
+    for (int nivel = 1; nivel <= alt; nivel++) {
+        imprimirNivel(raiz, nivel);
+    }
+    System.out.println();
+}
+
+private void imprimirNivel(Nodo nodo, int nivel) {
+    if (nodo == null) return;
+    if (nivel == 1) {
+        System.out.print(nodo.getValor() + " ");
+    } else {
+        imprimirNivel(nodo.getIzquierdo(), nivel - 1);
+        imprimirNivel(nodo.getDerecho(), nivel - 1);
+    }
+}
+
+/*
+ * Complejidad: O(n^2) en el peor caso (poco eficiente).
+ * Solo con fines didacticos - la version iterativa es
+ * mucho mas eficiente.
+ */`,
+        iterative: `// ============================================
+// BFS - Recorrido por NIVELES (Iterativo con Cola)
+// Orden: nivel 0, luego nivel 1, luego nivel 2, ...
+// ============================================
+import java.util.Queue;
+import java.util.LinkedList;
+
+public void bfs() {
+    System.out.print("BFS (por niveles): ");
+    if (raiz == null) { System.out.println(); return; }
+
+    Queue<Nodo> cola = new LinkedList<>();
+    cola.offer(raiz);
+
+    while (!cola.isEmpty()) {
+        Nodo actual = cola.poll();
+        System.out.print(actual.getValor() + " ");
+
+        // Encolar hijos (primero izquierdo, luego derecho)
+        if (actual.getIzquierdo() != null) {
+            cola.offer(actual.getIzquierdo());
+        }
+        if (actual.getDerecho() != null) {
+            cola.offer(actual.getDerecho());
+        }
+    }
+    System.out.println();
+}
+
+/*
+ * Esta es la forma NATURAL de implementar BFS.
+ * La cola (FIFO) garantiza el orden por niveles.
+ * Complejidad: O(n) tiempo, O(w) espacio (w = ancho maximo).
+ */`
+    }
+};
+
+let currentVersion = 'recursive';
+
+function setVersion(version) {
+    currentVersion = version;
+    document.getElementById('btn-recursive').classList.toggle('active', version === 'recursive');
+    document.getElementById('btn-iterative').classList.toggle('active', version === 'iterative');
+    showPseudocode();
+}
+
+function showPseudocode() {
+    const selector = document.getElementById('code-selector');
+    const display = document.getElementById('pseudocode-display');
+    const key = selector.value;
+    const entry = javaCodes[key];
+
+    if (!entry) return;
+
+    // Para "nodo" y "main": no aplica versión, siempre la misma
+    const btnRec = document.getElementById('btn-recursive');
+    const btnIter = document.getElementById('btn-iterative');
+
+    if (entry.iterative === null) {
+        // Esta operación no tiene versión iterativa separada
+        btnIter.classList.add('disabled-version');
+        btnIter.disabled = true;
+        btnRec.classList.add('active');
+        btnIter.classList.remove('active');
+        display.innerHTML = colorJava(entry.recursive);
+    } else {
+        btnIter.classList.remove('disabled-version');
+        btnIter.disabled = false;
+        const code = currentVersion === 'recursive' ? entry.recursive : entry.iterative;
+        display.innerHTML = colorJava(code);
+    }
+}
+
+function copyCode() {
+    const selector = document.getElementById('code-selector');
+    const key = selector.value;
+    const entry = javaCodes[key];
+    if (!entry) return;
+    const code = (entry.iterative === null || currentVersion === 'recursive')
+        ? entry.recursive
+        : entry.iterative;
+    navigator.clipboard.writeText(code).then(() => {
+        showToast('✓ Código Java copiado al portapapeles', 'success', 2000);
+    }).catch(() => {
+        showToast('No se pudo copiar el código', 'danger', 2000);
+    });
+}
+
+// ==================== MODAL DE COMPARACIÓN ====================
+function openCompareModal() {
+    // Determinar qué operación mostrar al abrir: la actual si tiene
+    // ambas versiones, sino la primera disponible (insert).
+    const currentKey = document.getElementById('code-selector').value;
+    const entry = javaCodes[currentKey];
+    const validKey = (entry && entry.iterative !== null) ? currentKey : 'insert';
+
+    document.getElementById('modal-selector').value = validKey;
+    updateCompareModal();
+    document.getElementById('compare-modal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCompareModal() {
+    document.getElementById('compare-modal').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+function updateCompareModal() {
+    const key = document.getElementById('modal-selector').value;
+    const entry = javaCodes[key];
+    if (!entry || entry.iterative === null) return;
+
+    document.getElementById('modal-code-recursive').innerHTML = colorJava(entry.recursive);
+    document.getElementById('modal-code-iterative').innerHTML = colorJava(entry.iterative);
+
+    // Resetear scroll
+    document.getElementById('modal-code-recursive').scrollTop = 0;
+    document.getElementById('modal-code-iterative').scrollTop = 0;
+
+    // Información contextual en el footer según la operación
+    const infoTexts = {
+        insert: 'La versión recursiva delega en la pila de llamadas; la iterativa usa variables <strong>actual</strong> y <strong>padre</strong>.',
+        search: 'Ambas tienen complejidad O(log n) en promedio; la iterativa usa memoria <strong>O(1)</strong> vs O(h) de la recursiva.',
+        delete: 'La eliminación recursiva es más compacta; la iterativa hace explícito el manejo de los <strong>tres casos</strong>.',
+        preorder: 'La recursión natural se reemplaza con una <strong>Stack&lt;Nodo&gt;</strong>. Apilar derecho primero para que salga izquierdo primero.',
+        inorder: 'Patrón clásico: <strong>bajar apilando a la izquierda</strong>, sacar y procesar, ir a la derecha.',
+        postorder: 'El más complejo iterativamente: requiere <strong>dos pilas</strong> para invertir el orden.',
+        bfs: 'BFS es <strong>naturalmente iterativo</strong> con una Cola (FIFO). La versión "recursiva" es artificial y poco eficiente.',
+        arbol: 'Clase completa lado a lado: observa cómo cambian todos los métodos al pasar de recursivo a iterativo.'
+    };
+    document.getElementById('modal-info-text').innerHTML =
+        '<i class="fas fa-lightbulb"></i> ' + (infoTexts[key] || 'Compara las dos implementaciones.');
+}
+
+function copyModalCode(version) {
+    const key = document.getElementById('modal-selector').value;
+    const entry = javaCodes[key];
+    if (!entry) return;
+    const code = version === 'recursive' ? entry.recursive : entry.iterative;
+    if (!code) return;
+    navigator.clipboard.writeText(code).then(() => {
+        showToast('✓ Código ' + (version === 'recursive' ? 'recursivo' : 'iterativo') + ' copiado', 'success', 1800);
+    });
+}
+
+// Desplazamiento sincronizado entre las dos columnas
+function setupSyncScroll() {
+    const left = document.getElementById('modal-code-recursive');
+    const right = document.getElementById('modal-code-iterative');
+    const sync = document.getElementById('sync-scroll');
+    let isScrolling = false;
+
+    function syncFromLeft() {
+        if (!sync.checked || isScrolling) return;
+        isScrolling = true;
+        // Sincronizar por porcentaje (las columnas pueden tener distinto alto)
+        const ratio = left.scrollTop / (left.scrollHeight - left.clientHeight || 1);
+        right.scrollTop = ratio * (right.scrollHeight - right.clientHeight);
+        setTimeout(() => { isScrolling = false; }, 50);
+    }
+
+    function syncFromRight() {
+        if (!sync.checked || isScrolling) return;
+        isScrolling = true;
+        const ratio = right.scrollTop / (right.scrollHeight - right.clientHeight || 1);
+        left.scrollTop = ratio * (left.scrollHeight - left.clientHeight);
+        setTimeout(() => { isScrolling = false; }, 50);
+    }
+
+    left.addEventListener('scroll', syncFromLeft);
+    right.addEventListener('scroll', syncFromRight);
+}
+
+// Cerrar modal con Escape o clic fuera del contenido
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('compare-modal');
+        if (modal.classList.contains('show')) closeCompareModal();
+    }
+});
+
+document.getElementById('compare-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'compare-modal') closeCompareModal();
+});
+
+// ==================== QUIZ ====================
+const quizQuestions = [
+    {
+        q: "En un BST, ¿qué recorrido devuelve los valores ordenados?",
+        opts: ["Preorden", "Inorden", "Postorden", "BFS"],
+        correct: 1
+    },
+    {
+        q: "¿Cuál es la complejidad promedio de búsqueda en un BST balanceado?",
+        opts: ["O(n)", "O(log n)", "O(n²)", "O(1)"],
+        correct: 1
+    },
+    {
+        q: "En un BST, los hijos izquierdos son:",
+        opts: ["Mayores que el padre", "Menores que el padre", "Iguales al padre", "Cualquiera"],
+        correct: 1
+    },
+    {
+        q: "¿Qué orden visita primero la raíz?",
+        opts: ["Inorden", "Postorden", "Preorden", "Ninguno"],
+        correct: 2
+    },
+    {
+        q: "Si insertas 50, 30, 70, 20 en un BST vacío, ¿cuál es la raíz?",
+        opts: ["20", "30", "50", "70"],
+        correct: 2
+    },
+    {
+        q: "¿Qué estructura usa BFS para recorrer un árbol?",
+        opts: ["Pila", "Cola", "Lista", "Conjunto"],
+        correct: 1
+    },
+    {
+        q: "El postorden es útil para:",
+        opts: ["Copiar árboles", "Ordenar valores", "Eliminar árboles", "Buscar valores"],
+        correct: 2
+    },
+    {
+        q: "¿Cuál es la altura de un BST con un solo nodo?",
+        opts: ["0", "1", "2", "Indefinida"],
+        correct: 1
+    }
+];
+
+let currentQuiz = -1;
+
+function generateQuiz() {
+    const container = document.getElementById('quiz-container');
+    let newIdx;
+    do {
+        newIdx = Math.floor(Math.random() * quizQuestions.length);
+    } while (newIdx === currentQuiz && quizQuestions.length > 1);
+    currentQuiz = newIdx;
+    
+    const quiz = quizQuestions[currentQuiz];
+    
+    let html = `<div class="quiz-question">
+        <div class="quiz-question-text"><i class="fas fa-question-circle"></i> ${quiz.q}</div>
+        <div class="quiz-options">`;
+    
+    quiz.opts.forEach((opt, i) => {
+        html += `<button class="quiz-option" onclick="checkQuiz(this, ${i}, ${quiz.correct})">${opt}</button>`;
+    });
+    
+    html += `</div></div>`;
+    container.innerHTML = html;
+}
+
+function checkQuiz(btn, selected, correct) {
+    const buttons = btn.parentElement.querySelectorAll('.quiz-option');
+    buttons.forEach((b, i) => {
+        b.disabled = true;
+        if (i === correct) b.classList.add('correct');
+        else if (i === selected) b.classList.add('incorrect');
+    });
+    
+    if (selected === correct) {
+        showToast('¡Correcto! 🎉', 'success', 2000);
+    } else {
+        showToast('Incorrecto. La respuesta correcta está marcada.', 'danger', 2500);
+    }
+}
+
+// ==================== EVENT LISTENERS ====================
+document.getElementById('batch-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') loadBatch();
+});
+
+document.getElementById('single-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') insertSingle();
+});
+
+document.getElementById('search-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') searchValue();
+});
+
+document.getElementById('speed-slider').addEventListener('input', (e) => {
+    document.getElementById('speed-label').textContent = e.target.value + 'ms';
+});
+
+// ==================== INICIALIZACIÓN ====================
+window.addEventListener('load', () => {
+    initSVG();
+    renderTree(false);
+    showPseudocode();
+    setupSyncScroll();
+    showToast('¡Bienvenido! Carga un árbol para comenzar', 'info', 3000);
+});
+
+window.addEventListener('resize', () => {
+    if (bst.root) renderTree(false);
+});
+
+</script>
+</body>
+</html>
